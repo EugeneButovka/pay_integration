@@ -8,11 +8,13 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Recover
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.postForEntity
+
 
 @Service
 class PaymentService(
@@ -39,6 +41,12 @@ class PaymentService(
 
             res.body?.data?.session?.redirect_url
         }
+    }
+
+    @Recover
+    fun recoverRestClientException(e: RestClientException?): String? {
+        logger.info { "in recover for RestClientException" }
+        return null
     }
 }
 
